@@ -1,28 +1,49 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
-import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import MenuIcon from '@mui/icons-material/Menu';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import { RouterLink } from '../RouterLink/RouterLink';
+import * as React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { signOut } from "firebase/auth";
+
+import { RouterLink } from "../RouterLink/RouterLink";
+import { RootState } from "../../redux/redux";
+import { auth } from "../../firebase/firebase-config";
+import { authActions } from "../../redux/auth-slice";
+
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import CssBaseline from "@mui/material/CssBaseline";
+import Divider from "@mui/material/Divider";
+import Drawer from "@mui/material/Drawer";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
+import List from "@mui/material/List";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import { Stack } from "@mui/material";
 
 interface Props {
   window?: () => Window;
 }
 
 const drawerWidth = 240;
-const navItems = [{name:'Logout', link: '/login'}, {name:'Login', link: '/login'}, {name:'Register', link: '/register'}];
 
-export function Header(props: Props) {
+export const Header: React.FC = (props: Props) => {
+  const dispatch = useDispatch();
+
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  const handleOnLogout = () => {
+    signOut(auth).then(() => {
+      dispatch(authActions.setUser(undefined));
+    });
+  };
+
+  /* -------------------------------------------------------------------------- */
+  /*                               For Mobile View : Start                       */
+  /* -------------------------------------------------------------------------- */
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -31,56 +52,97 @@ export function Header(props: Props) {
   };
 
   const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
+    <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
       <Typography variant="h6" sx={{ my: 2 }}>
         Expense Tracker
       </Typography>
       <Divider />
       <List>
-        {navItems.map((item) => (
-          <RouterLink navigateLink={item.link} key={item.name}>
-            <ListItem  disablePadding>
-              <ListItemButton sx={{ textAlign: 'center' }}>
-                <ListItemText primary={item.name} />
-              </ListItemButton>
-            </ListItem>
-          </RouterLink>
-        ))}
+        {!user && (
+          <>
+            <RouterLink navigateLink="/login">
+              <ListItem disablePadding>
+                <ListItemButton sx={{ textAlign: "center" }}>
+                  <ListItemText primary="Login" />
+                </ListItemButton>
+              </ListItem>
+            </RouterLink>
+            <RouterLink navigateLink="/register">
+              <ListItem disablePadding>
+                <ListItemButton sx={{ textAlign: "center" }}>
+                  <ListItemText primary="Register" />
+                </ListItemButton>
+              </ListItem>
+            </RouterLink>
+          </>
+        )}
+        {user && (
+          <ListItem disablePadding onClick={handleOnLogout}>
+            <ListItemButton sx={{ textAlign: "center" }}>
+              <ListItemText primary="Logout" />
+            </ListItemButton>
+          </ListItem>
+        )}
       </List>
     </Box>
   );
 
-  const container = window !== undefined ? () => window().document.body : undefined;
+  const container =
+    window !== undefined ? () => window().document.body : undefined;
+
+  /* -------------------------------------------------------------------------- */
+  /*                           For Mobile View : End                            */
+  /* -------------------------------------------------------------------------- */
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar component="nav">
+      <AppBar component="nav" elevation={0}>
         <Toolbar>
           <IconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
+            sx={{ mr: 2, display: { sm: "none" } }}
           >
             <MenuIcon />
           </IconButton>
           <Typography
             variant="h6"
             component="div"
-            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+            sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
           >
             Expense Tracker
           </Typography>
-          <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-            {navItems.map((item) => (
-              <RouterLink navigateLink={item.link} key={item.name}>
-                <Button  sx={{ color: '#fff' }}>
-                  {item.name}
+          <Box sx={{ display: { xs: "none", sm: "block" } }}>
+            {!user && (
+              <>
+                <RouterLink navigateLink="/login">
+                  <Button variant="text" color="secondary" size="large">
+                    Login
+                  </Button>
+                </RouterLink>
+                <RouterLink navigateLink="/register">
+                  <Button variant="text" color="secondary" size="large">
+                    Register
+                  </Button>
+                </RouterLink>
+              </>
+            )}
+            {user && (
+              <Stack direction="row" alignItems={"center"} gap={2}>
+                <Typography variant="h6">Ronish Lopxhan</Typography>
+                <Button
+                  variant="text"
+                  color="secondary"
+                  size="large"
+                  onClick={handleOnLogout}
+                >
+                  Logout
                 </Button>
-              </RouterLink>
-            ))}
+              </Stack>
+            )}
           </Box>
         </Toolbar>
       </AppBar>
@@ -94,8 +156,11 @@ export function Header(props: Props) {
             keepMounted: true, // Better open performance on mobile.
           }}
           sx={{
-            display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            display: { xs: "block", sm: "none" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+            },
           }}
         >
           {drawer}
@@ -106,4 +171,4 @@ export function Header(props: Props) {
       </Box>
     </Box>
   );
-}
+};

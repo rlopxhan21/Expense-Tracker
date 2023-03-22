@@ -1,4 +1,5 @@
 import React, { ChangeEventHandler } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 import { Layout } from "../../components/layout/Layout";
 import {
@@ -21,37 +22,54 @@ import {
   Typography,
 } from "@mui/material";
 import { LockOutlined } from "@mui/icons-material";
+import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { authActions } from "../../redux/auth-slice";
+import { auth } from "../../firebase/firebase-config";
+import { RootState } from "../../redux/redux";
+import { useNavigate } from "react-router-dom";
 
 export interface FormDataType {
   [name: string]: string;
 }
 
-  const inputFields: InputFieldsDataType[] = [
-    {
-      label: "Email Address",
-      id: "email",
-      type: "email",
-      name: "email",
-      autoComplete: "email",
-      autoFocus: true,
-      fullWidth: true,
-      required: true,
-    },
-    {
-      label: "Password",
-      id: "password",
-      type: "password",
-      name: "password",
-      autoComplete: "current-password",
-      required: true,
-      autoFocus: false,
-      fullWidth: true,
-    },
-  ];
+const inputFields: InputFieldsDataType[] = [
+  {
+    label: "Email Address",
+    id: "email",
+    type: "email",
+    name: "email",
+    autoComplete: "email",
+    autoFocus: true,
+    fullWidth: true,
+    required: true,
+  },
+  {
+    label: "Password",
+    id: "password",
+    type: "password",
+    name: "password",
+    autoComplete: "current-password",
+    required: true,
+    autoFocus: false,
+    fullWidth: true,
+  },
+];
 
 export const LoginPage = () => {
+  const dispatch = useDispatch();
+
   const [formData, setFormData] = React.useState<FormDataType>({});
   const [formError, setFormError] = React.useState<string>("");
+
+  const user = useSelector((state: RootState) => state.auth.user);
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (user?.uid) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     const { name, value } = event.target;
@@ -60,7 +78,7 @@ export const LoginPage = () => {
       setFormError("");
       value.length < 6 && setFormError("Password is too short.");
 
-      !/[0-9]/.test(value) && setFormError("Must include number");
+      !/[/d]/.test(value) && setFormError("Must include number");
       !/[A-Z]/.test(value) && setFormError("Must include upercase letter");
       !/[a-z]/.test(value) && setFormError("Must include lowercase letter");
     }
@@ -71,8 +89,28 @@ export const LoginPage = () => {
     });
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    const { email, password } = formData;
+
+    try {
+      const resPending = signInWithEmailAndPassword(auth, email, password);
+      toast.promise(resPending, { pending: "Response Pending!" });
+
+      const { user } = await resPending;
+
+      if (user?.uid) {
+        const newData: { uid: string } = {
+          uid: user.uid,
+        };
+        dispatch(authActions.setUser(newData));
+
+        toast.success("Logged In Successfully!");
+      }
+    } catch (error) {
+      toast.error("Login Failed!");
+    }
   };
 
   return (

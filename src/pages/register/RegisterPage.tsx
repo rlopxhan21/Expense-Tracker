@@ -1,15 +1,20 @@
-import React, { ChangeEventHandler } from 'react'
-import { toast } from 'react-toastify';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import React, { ChangeEventHandler } from "react";
+import { toast } from "react-toastify";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
-import { Layout } from '../../components/layout/Layout'
-import { CustomInput, InputFieldsDataType } from '../../components/custom-input/CustomInput';
-import { FormDataType } from '../login/LoginPage';
+import { Layout } from "../../components/layout/Layout";
+import {
+  CustomInput,
+  InputFieldsDataType,
+} from "../../components/custom-input/CustomInput";
+import { FormDataType } from "../login/LoginPage";
+import { doc, setDoc } from "firebase/firestore";
 
 import {
   Avatar,
   Box,
-  Button,
   Checkbox,
   CssBaseline,
   FormControlLabel,
@@ -21,66 +26,71 @@ import {
   Typography,
 } from "@mui/material";
 import { LockOutlined } from "@mui/icons-material";
-import { auth } from '../../firebase/firebase-config';
-import { LoadingButton } from '@mui/lab';
+import { auth, db } from "../../firebase/firebase-config";
+import { LoadingButton } from "@mui/lab";
+import { authActions } from "../../redux/auth-slice";
 
-  const inputFields: InputFieldsDataType[] = [
-    {
-      label: "First Name",
-      id: "fname",
-      type: "text",
-      name: "fname",
-      autoComplete: "fname",
-      autoFocus: true,
-      fullWidth: true,
-      required: true,
-    },
-    {
-      label: "Last Name",
-      id: "lname",
-      type: "text",
-      name: "lname",
-      autoComplete: "lname",
-      required: true,
-      autoFocus: false,
-      fullWidth: true,
-    },
-    {
-      label: "Email Address",
-      id: "email",
-      type: "email",
-      name: "email",
-      autoComplete: "email",
-      required: true,
-      autoFocus: false,
-      fullWidth: true,
-    },
-    {
-      label: "Password",
-      id: "password",
-      type: "password",
-      name: "password",
-      autoComplete: "current-password",
-      required: true,
-      autoFocus: false,
-      fullWidth: true,
-    },
-    {
-      label: "Confirm Password",
-      id: "password2",
-      type: "password",
-      name: "password2",
-      autoComplete: "current-password",
-      required: true,
-      autoFocus: false,
-      fullWidth: true,
-    },
-  ];
+const inputFields: InputFieldsDataType[] = [
+  {
+    label: "First Name",
+    id: "fname",
+    type: "text",
+    name: "fname",
+    autoComplete: "fname",
+    autoFocus: true,
+    fullWidth: true,
+    required: true,
+  },
+  {
+    label: "Last Name",
+    id: "lname",
+    type: "text",
+    name: "lname",
+    autoComplete: "lname",
+    required: true,
+    autoFocus: false,
+    fullWidth: true,
+  },
+  {
+    label: "Email Address",
+    id: "email",
+    type: "email",
+    name: "email",
+    autoComplete: "email",
+    required: true,
+    autoFocus: false,
+    fullWidth: true,
+  },
+  {
+    label: "Password",
+    id: "password",
+    type: "password",
+    name: "password",
+    autoComplete: "current-password",
+    required: true,
+    autoFocus: false,
+    fullWidth: true,
+  },
+  {
+    label: "Confirm Password",
+    id: "password2",
+    type: "password",
+    name: "password2",
+    autoComplete: "current-password",
+    required: true,
+    autoFocus: false,
+    fullWidth: true,
+  },
+];
 
 export const RegisterPage = () => {
-    const [formData, setFormData] = React.useState<FormDataType>({});
+  const dispatch = useDispatch();
+
+  const [formData, setFormData] = React.useState<FormDataType>({});
   const [formError, setFormError] = React.useState<string>("");
-  const [isLoading, setIsLoading] = React.useState<boolean>(false)
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
+  const navigate = useNavigate();
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     const { name, value } = event.target;
@@ -103,30 +113,41 @@ export const RegisterPage = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const {password, password2, email} = formData;
+    const { password, password2, email, fname } = formData;
 
     if (password !== password2) {
-      return toast.error("Password do not match!")
+      return toast.error("Password do not match!");
     }
-    
-    setIsLoading(true)
-    createUserWithEmailAndPassword(auth, email,password).then((userCredential) => {
-    // Signed in 
-      const user = userCredential.user;
-      console.log("LOged")
-    // ...
-    setIsLoading(false)
-      
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    // ..
-    setIsLoading(false)
-  });
-    
 
+    setIsLoading(true);
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(async (userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        setIsLoading(false);
 
+        updateProfile(user, { displayName: fname });
+
+        dispatch(authActions.setUser(user));
+
+        await setDoc(doc(db, "users", user.uid), {
+          fname: fname,
+          lname: formData.lname,
+          email: email,
+        });
+
+        toast.success("Registration Successful!");
+        navigate("/dashboard");
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        setIsLoading(false);
+
+        if (error.message.includes("auth/email-already-in-use")) {
+          toast.error("User already exists.");
+        }
+      });
   };
 
   return (
@@ -237,5 +258,5 @@ export const RegisterPage = () => {
         </Grid>
       </Layout>
     </React.Fragment>
-  )
-}
+  );
+};
