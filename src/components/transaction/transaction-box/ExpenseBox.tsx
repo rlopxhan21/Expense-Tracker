@@ -7,7 +7,15 @@ import Chip from "@mui/material/Chip";
 import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 
-export const ExpenseBox = () => {
+interface Props {
+  totalExpense: number;
+  expenseChange: number;
+}
+
+export const ExpenseBox: React.FC<Props> = ({
+  totalExpense,
+  expenseChange,
+}) => {
   return (
     <Paper
       elevation={0}
@@ -26,16 +34,22 @@ export const ExpenseBox = () => {
         Expense Information
       </Typography>
       <Typography variant="h3" fontWeight={700} color="error">
-        $ 42, 000
+        $ {totalExpense}
       </Typography>
       <Chip
         icon={
-          true ? <KeyboardDoubleArrowUpIcon /> : <KeyboardDoubleArrowDownIcon />
+          expenseChange > 0 ? (
+            <KeyboardDoubleArrowUpIcon />
+          ) : (
+            <KeyboardDoubleArrowDownIcon />
+          )
         }
-        label="Up by 100%"
+        label={`${expenseChange > 0 ? "Up" : "Down"} by ${Math.abs(
+          +expenseChange.toFixed(2)
+        )} % than last month`}
         variant="filled"
         color="error"
-        sx={{ py: 3, fontWeight: 700, fontSize: 20 }}
+        sx={{ py: 3, fontWeight: 700, fontSize: 18 }}
       />
     </Paper>
   );

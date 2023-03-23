@@ -1,3 +1,4 @@
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { toast } from "react-toastify";
@@ -17,7 +18,7 @@ export const useGetTransaction = () => {
 
   const userID = user?.uid;
 
-  const fetchTransactionsData = async () => {
+  const fetchTransactionsData = React.useCallback(async () => {
     try {
       const q = query(
         collection(db, "transactions"),
@@ -38,7 +39,7 @@ export const useGetTransaction = () => {
     } catch (error) {
       toast.error("Fetching Transaction Failed!");
     }
-  };
+  }, [dispatch, userID]);
 
   return { fetchTransactionsData };
 };

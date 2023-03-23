@@ -7,7 +7,11 @@ import Chip from "@mui/material/Chip";
 import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 
-export const BalanceBox = () => {
+interface Props {
+  totalBalance: number;
+}
+
+export const BalanceBox: React.FC<Props> = ({ totalBalance }) => {
   return (
     <Paper
       elevation={0}
@@ -23,10 +27,14 @@ export const BalanceBox = () => {
       }}
     >
       <Typography variant="h5" fontWeight={700}>
-        Your Total Balance
+        Balance / Saving Information
       </Typography>
-      <Typography variant="h3" fontWeight={700}>
-        $ 42, 000
+      <Typography
+        variant="h3"
+        fontWeight={700}
+        color={totalBalance >= 0 ? "text.secondary" : "error"}
+      >
+        {totalBalance >= 0 ? "+" : "-"} $ {Math.abs(totalBalance)}
       </Typography>
       <Chip
         icon={
@@ -34,7 +42,7 @@ export const BalanceBox = () => {
         }
         label="Up by 100%"
         variant="filled"
-        sx={{ py: 3, fontWeight: 700, fontSize: 20 }}
+        sx={{ py: 3, fontWeight: 700, fontSize: 20, visibility: "hidden" }}
       />
     </Paper>
   );

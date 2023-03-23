@@ -1,7 +1,4 @@
 import React from "react";
-import { useSelector } from "react-redux";
-
-import { RootState } from "../../../redux/redux";
 
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
@@ -10,13 +7,12 @@ import Chip from "@mui/material/Chip";
 import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 
-export const IncomeBox = () => {
-  const transactionData = useSelector(
-    (state: RootState) => state.trans.transactions
-  );
+interface Props {
+  totalIncome: number;
+  incomeChange: number;
+}
 
-  let income = 0;
-  // const totalIncome = transactionData.map(item => )
+export const IncomeBox: React.FC<Props> = ({ totalIncome, incomeChange }) => {
   return (
     <Paper
       elevation={0}
@@ -35,16 +31,22 @@ export const IncomeBox = () => {
         Income Information
       </Typography>
       <Typography variant="h3" fontWeight={700} color="text.secondary">
-        $ 42, 000
+        $ {totalIncome}
       </Typography>
       <Chip
         icon={
-          true ? <KeyboardDoubleArrowUpIcon /> : <KeyboardDoubleArrowDownIcon />
+          incomeChange > 0 ? (
+            <KeyboardDoubleArrowUpIcon />
+          ) : (
+            <KeyboardDoubleArrowDownIcon />
+          )
         }
-        label="Up by 100%"
+        label={`${incomeChange > 0 ? "Up" : "Down"} by ${Math.abs(
+          +incomeChange.toFixed(2)
+        )} % than last month`}
         variant="filled"
         color="success"
-        sx={{ py: 3, fontWeight: 700, fontSize: 20 }}
+        sx={{ py: 3, fontWeight: 700, fontSize: 18 }}
       />
     </Paper>
   );

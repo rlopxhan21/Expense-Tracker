@@ -1,21 +1,23 @@
 import React from "react";
 
-import { useGetTransaction } from "../../components/transaction/transaction-form/useGetTransaction";
 import { Layout } from "../../components/layout/Layout";
 import { TransactionForm } from "../../components/transaction/transaction-form/TransactionForm";
 import { TransactionTable } from "../../components/transaction/transaction-table/TransactionTable";
 import { BalanceBox } from "../../components/transaction/transaction-box/BalanceBox";
 import { IncomeBox } from "../../components/transaction/transaction-box/IncomeBox";
 import { ExpenseBox } from "../../components/transaction/transaction-box/ExpenseBox";
+import { useDashBoardCalcInformation } from "./useDashBoardCalcInformation";
 
 import Stack from "@mui/material/Stack";
 
 export const DashboardPage = () => {
-  const { fetchTransactionsData } = useGetTransaction();
-
-  React.useEffect(() => {
-    fetchTransactionsData();
-  }, []);
+  const {
+    totalBalance,
+    totalIncome,
+    incomeChange,
+    totalExpense,
+    expenseChange,
+  } = useDashBoardCalcInformation();
 
   return (
     <Layout>
@@ -26,16 +28,22 @@ export const DashboardPage = () => {
         sx={{ m: "auto", my: 4 }}
       >
         <Stack direction={"row"} gap={4}>
-          <BalanceBox />
-          <IncomeBox />
-          <ExpenseBox />
+          <BalanceBox totalBalance={totalBalance} />
+          <IncomeBox totalIncome={totalIncome} incomeChange={incomeChange} />
+          <ExpenseBox
+            totalExpense={totalExpense}
+            expenseChange={expenseChange}
+          />
           <TransactionForm />
         </Stack>
         <Stack direction={"row"} gap={4}>
           <TransactionTable />
           <Stack gap={2}>
-            <IncomeBox />
-            <ExpenseBox />
+            <IncomeBox totalIncome={totalIncome} incomeChange={incomeChange} />
+            <ExpenseBox
+              totalExpense={totalExpense}
+              expenseChange={expenseChange}
+            />
           </Stack>
         </Stack>
       </Stack>
