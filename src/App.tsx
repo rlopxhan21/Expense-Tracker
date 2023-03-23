@@ -1,4 +1,6 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import { onAuthStateChanged } from "firebase/auth";
 
 import { useTheme } from "./theme/useTheme";
 
@@ -8,8 +10,6 @@ import { LoginPage } from "./pages/login/LoginPage";
 import { RegisterPage } from "./pages/register/RegisterPage";
 import { DashboardPage } from "./pages/dashboard/DashboardPage";
 import { PrivateRouter } from "./components/PrivateRoute/PrivateRouter";
-import { useDispatch } from "react-redux";
-import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase/firebase-config";
 import { authActions } from "./redux/auth-slice";
 
@@ -19,7 +19,7 @@ const App = () => {
   const dispatch = useDispatch();
 
   onAuthStateChanged(auth, (user) => {
-    user && dispatch(authActions.setUser(user));
+    user && dispatch(authActions.setUser({ uid: user?.uid }));
   });
 
   return (

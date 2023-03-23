@@ -1,7 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 interface InitialStateDataType {
-  transactions: { [name: string]: string }[];
+  transactions: {
+    desc: string;
+    amount: string;
+    userID: string;
+    date: string;
+    expense_income: string;
+    id: string;
+  }[];
 }
 
 const initialState: InitialStateDataType = {

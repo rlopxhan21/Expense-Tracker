@@ -7,7 +7,6 @@ import { TransactionTable } from "../../components/transaction/transaction-table
 import { BalanceBox } from "../../components/transaction/transaction-box/BalanceBox";
 import { IncomeBox } from "../../components/transaction/transaction-box/IncomeBox";
 import { ExpenseBox } from "../../components/transaction/transaction-box/ExpenseBox";
-import { TransactionChart } from "../../components/transaction/transaction-box/TransactionChart";
 
 import Stack from "@mui/material/Stack";
 
@@ -24,7 +23,7 @@ export const DashboardPage = () => {
         alignItems="center"
         gap={4}
         width={{ xs: "95%", md: "90%" }}
-        sx={{ m: "auto", mt: 4 }}
+        sx={{ m: "auto", my: 4 }}
       >
         <Stack direction={"row"} gap={4}>
           <BalanceBox />
@@ -32,9 +31,12 @@ export const DashboardPage = () => {
           <ExpenseBox />
           <TransactionForm />
         </Stack>
-        <Stack direction={"row"} gap={6}>
+        <Stack direction={"row"} gap={4}>
           <TransactionTable />
-          <TransactionChart />
+          <Stack gap={2}>
+            <IncomeBox />
+            <ExpenseBox />
+          </Stack>
         </Stack>
       </Stack>
     </Layout>

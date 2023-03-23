@@ -1,5 +1,8 @@
 import React, { ChangeEventHandler } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 import { Layout } from "../../components/layout/Layout";
 import {
@@ -22,12 +25,9 @@ import {
   Typography,
 } from "@mui/material";
 import { LockOutlined } from "@mui/icons-material";
-import { toast } from "react-toastify";
-import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../../redux/auth-slice";
 import { auth } from "../../firebase/firebase-config";
 import { RootState } from "../../redux/redux";
-import { useNavigate } from "react-router-dom";
 
 export interface FormDataType {
   [name: string]: string;
@@ -101,7 +101,7 @@ export const LoginPage = () => {
       const { user } = await resPending;
 
       if (user?.uid) {
-        const newData: { uid: string } = {
+        const newData = {
           uid: user.uid,
         };
         dispatch(authActions.setUser(newData));

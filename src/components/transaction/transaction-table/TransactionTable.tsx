@@ -19,7 +19,11 @@ export const TransactionTable = () => {
   );
 
   return (
-    <TableContainer component={Paper} sx={{ width: 1256 }}>
+    <TableContainer
+      component={Paper}
+      elevation={0}
+      sx={{ width: 1264, borderRadius: 5 }}
+    >
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
