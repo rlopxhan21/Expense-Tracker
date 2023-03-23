@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 interface InitialStateDateType {
   user:
     | {
-        uid: string;
+        [name: string]: string;
       }
     | undefined;
 }

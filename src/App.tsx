@@ -12,23 +12,15 @@ import { useDispatch } from "react-redux";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase/firebase-config";
 import { authActions } from "./redux/auth-slice";
-import { usePostTransaction } from "./components/transaction/transaction-form/usePostTransaction";
 
 const App = () => {
   const { theme } = useTheme();
 
-  const { fetchTransactionsData } = usePostTransaction();
-
   const dispatch = useDispatch();
 
   onAuthStateChanged(auth, (user) => {
-    const newData = { uid: user?.uid };
-    user && dispatch(authActions.setUser(newData));
+    user && dispatch(authActions.setUser(user));
   });
-
-  // React.useEffect(() => {
-  //   fetchTransactionsData();
-  // }, []);
 
   return (
     <ThemeProvider theme={theme}>

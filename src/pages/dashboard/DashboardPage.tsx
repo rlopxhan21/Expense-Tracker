@@ -1,5 +1,6 @@
 import React from "react";
 
+import { useGetTransaction } from "../../components/transaction/transaction-form/useGetTransaction";
 import { Layout } from "../../components/layout/Layout";
 import { TransactionForm } from "../../components/transaction/transaction-form/TransactionForm";
 import { TransactionTable } from "../../components/transaction/transaction-table/TransactionTable";
@@ -11,6 +12,12 @@ import { TransactionChart } from "../../components/transaction/transaction-box/T
 import Stack from "@mui/material/Stack";
 
 export const DashboardPage = () => {
+  const { fetchTransactionsData } = useGetTransaction();
+
+  React.useEffect(() => {
+    fetchTransactionsData();
+  }, []);
+
   return (
     <Layout>
       <Stack

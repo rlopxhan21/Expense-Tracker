@@ -2,8 +2,11 @@ import React from "react";
 import { PieChart } from "react-minimal-pie-chart";
 
 import Box from "@mui/material/Box";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/redux";
 
 export const TransactionChart = () => {
+  const data = useSelector((state: RootState) => state.trans.transactions);
   return (
     <Box sx={{ height: 400, width: 400, flexGrow: 1 }}>
       <PieChart

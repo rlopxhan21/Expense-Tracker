@@ -1,6 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+interface InitialStateDataType {
+  transactions: { [name: string]: string }[];
+}
+
+const initialState: InitialStateDataType = {
   transactions: [],
 };
 

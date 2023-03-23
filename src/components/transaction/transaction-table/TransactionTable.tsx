@@ -1,4 +1,7 @@
-import * as React from "react";
+import { useSelector } from "react-redux";
+
+import { RootState } from "../../../redux/redux";
+
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -7,30 +10,14 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { IconButton } from "@mui/material";
+
 import { Delete } from "@mui/icons-material";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/redux";
-
-function createData(
-  expense: string,
-  amount: string,
-  date: string,
-  uid: string
-) {
-  return { expense, amount, date, uid };
-}
-
-const rows = [
-  createData("Frozen yoghurt", "159", "6.0", "24"),
-  createData("Ice cream sandwich", "237", "9.0", "37"),
-];
 
 export const TransactionTable = () => {
   const transactionData = useSelector(
     (state: RootState) => state.trans.transactions
   );
 
-  console.log(transactionData);
   return (
     <TableContainer component={Paper} sx={{ width: 1256 }}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -43,16 +30,15 @@ export const TransactionTable = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow
-              key={row.expense}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
+          {transactionData.map((item) => (
+            <TableRow key={item.id}>
               <TableCell component="th" scope="row">
-                {row.expense}
+                {item.desc}
               </TableCell>
-              <TableCell align="right">{row.amount}</TableCell>
-              <TableCell align="right">{row.date}</TableCell>
+              <TableCell align="right">$ {item.amount}</TableCell>
+              <TableCell align="right">
+                {new Date(item.date).toDateString()}
+              </TableCell>
               <TableCell align="right">
                 <IconButton>
                   <Delete color="error" />

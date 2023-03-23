@@ -23,7 +23,7 @@ export const ExpenseBox = () => {
       }}
     >
       <Typography variant="h5" fontWeight={700} color="error">
-        Your Total Balance
+        Expense Information
       </Typography>
       <Typography variant="h3" fontWeight={700} color="error">
         $ 42, 000
