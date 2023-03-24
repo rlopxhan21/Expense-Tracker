@@ -17,6 +17,7 @@ export const inputFields: InputListDataType[] = [
     endIconSwap: <></>,
     autoFocus: true,
     required: true,
+    defaultValue: "",
   },
   {
     label: "Last Name",
@@ -28,6 +29,7 @@ export const inputFields: InputListDataType[] = [
     endIconSwap: <></>,
     required: true,
     autoFocus: false,
+    defaultValue: "",
   },
   {
     label: "Email Address",
@@ -39,6 +41,7 @@ export const inputFields: InputListDataType[] = [
     endIconSwap: <></>,
     required: true,
     autoFocus: false,
+    defaultValue: "",
   },
   {
     label: "Password",
@@ -50,6 +53,7 @@ export const inputFields: InputListDataType[] = [
     endIconSwap: <VisibilityOffIcon />,
     required: true,
     autoFocus: false,
+    defaultValue: "",
   },
   {
     label: "Confirm Password",
@@ -61,5 +65,6 @@ export const inputFields: InputListDataType[] = [
     endIconSwap: <VisibilityOffIcon />,
     required: true,
     autoFocus: false,
+    defaultValue: "",
   },
 ];

@@ -19,7 +19,7 @@ root.render(
         <App />
       </Provider>
     </BrowserRouter>
-    <ToastContainer />
+    <ToastContainer position="bottom-right" />
   </React.StrictMode>
 );
 

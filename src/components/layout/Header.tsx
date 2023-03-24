@@ -77,11 +77,18 @@ export const Header: React.FC = (props: Props) => {
           </>
         )}
         {user && (
-          <ListItem disablePadding onClick={handleOnLogout}>
-            <ListItemButton sx={{ textAlign: "center" }}>
-              <ListItemText primary="Logout" />
-            </ListItemButton>
-          </ListItem>
+          <>
+            <ListItem>
+              <ListItemButton sx={{ textAlign: "center" }}>
+                <ListItemText primary={`Welcome Back ${user?.displayName}`} />
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding onClick={handleOnLogout}>
+              <ListItemButton sx={{ textAlign: "center" }}>
+                <ListItemText primary="Logout" />
+              </ListItemButton>
+            </ListItem>
+          </>
         )}
       </List>
     </Box>
@@ -97,21 +104,24 @@ export const Header: React.FC = (props: Props) => {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar component="nav" elevation={0}>
+      <AppBar component="nav" elevation={0} sx={{ background: "#d0bfff" }}>
         <Toolbar>
           <IconButton
-            color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" } }}
+            sx={{ mr: 2, display: { sm: "none" }, color: "#000" }}
           >
             <MenuIcon />
           </IconButton>
           <Typography
             variant="h6"
             component="div"
-            sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+            sx={{
+              flexGrow: 1,
+              color: "#000",
+              display: { xs: "none", sm: "block" },
+            }}
           >
             Expense Tracker
           </Typography>
@@ -132,7 +142,13 @@ export const Header: React.FC = (props: Props) => {
             )}
             {user && (
               <Stack direction="row" alignItems={"center"} gap={2}>
-                <Typography variant="h6">Ronish Lopxhan</Typography>
+                <Typography
+                  variant="body1"
+                  fontWeight={700}
+                  sx={{ color: "#000" }}
+                >
+                  Welcome Back {user.displayName}
+                </Typography>
                 <Button
                   variant="text"
                   color="secondary"

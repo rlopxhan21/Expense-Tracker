@@ -16,6 +16,7 @@ export const inputFields: InputListDataType[] = [
     endIconSwap: <></>,
     autoFocus: true,
     required: true,
+    defaultValue: "",
   },
   {
     id: "password",
@@ -27,5 +28,6 @@ export const inputFields: InputListDataType[] = [
     endIconSwap: <VisibilityOffIcon />,
     required: true,
     autoFocus: false,
+    defaultValue: "",
   },
 ];

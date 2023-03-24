@@ -34,6 +34,7 @@ export const TransactionForm = () => {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     resolver: zodResolver(schema),
   });
@@ -42,10 +43,25 @@ export const TransactionForm = () => {
 
   const onTransactionFormHandler: SubmitHandler<FormDataType> = (data) => {
     sendTransactionData({ ...data, expense_income: tabValue });
+    console.log(data.date);
+    reset({
+      desc: "",
+      amount: "",
+      date: "",
+      expense_income: new Date().toISOString().split("T")[0],
+    });
   };
 
   return (
-    <Paper elevation={0} sx={{ p: 4, width: 400, borderRadius: 5 }}>
+    <Paper
+      elevation={0}
+      sx={{
+        p: 4,
+        width: 400,
+        borderRadius: 5,
+        background: tabValue === "income" ? "#b2f2bb" : "#ffc9c9",
+      }}
+    >
       <Stack
         gap={2}
         component="form"
@@ -63,7 +79,7 @@ export const TransactionForm = () => {
               label="Income"
               value="income"
               sx={{
-                "&:checked": { color: "red", background: "red" },
+                color: "green",
                 fontWeight: 700,
               }}
             />

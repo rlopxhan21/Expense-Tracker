@@ -14,6 +14,7 @@ export interface InputListDataType {
   endIconSwap: JSX.Element;
   autoFocus: boolean;
   required: boolean;
+  defaultValue: string;
 }
 
 interface Props {
@@ -41,6 +42,7 @@ export const IconInputField: React.FC<Props> = ({ item, register }) => {
         id={item.id}
         label={item.label}
         type={inputType}
+        defaultValue={item.defaultValue}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">{item.startIcon}</InputAdornment>

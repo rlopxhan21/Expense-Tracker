@@ -15,6 +15,7 @@ export const inputFields: InputListDataType[] = [
     endIconSwap: <></>,
     autoFocus: true,
     required: true,
+    defaultValue: "",
   },
   {
     id: "amount",
@@ -26,6 +27,7 @@ export const inputFields: InputListDataType[] = [
     endIconSwap: <></>,
     required: true,
     autoFocus: false,
+    defaultValue: "",
   },
   {
     id: "date",
@@ -37,5 +39,6 @@ export const inputFields: InputListDataType[] = [
     endIconSwap: <></>,
     required: true,
     autoFocus: false,
+    defaultValue: new Date().toISOString().split("T")[0],
   },
 ];
