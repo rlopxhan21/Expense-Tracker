@@ -19,7 +19,10 @@ const App = () => {
   const dispatch = useDispatch();
 
   onAuthStateChanged(auth, (user) => {
-    user && dispatch(authActions.setUser({ uid: user?.uid }));
+    user &&
+      dispatch(
+        authActions.setUser({ uid: user?.uid, displayName: user?.displayName })
+      );
   });
 
   return (

@@ -9,6 +9,7 @@ import { ExpenseBox } from "../../components/transaction/transaction-box/Expense
 import { useDashBoardCalcInformation } from "./useDashBoardCalcInformation";
 
 import Stack from "@mui/material/Stack";
+import { Box } from "@mui/material";
 
 export const DashboardPage = () => {
   const {
@@ -38,13 +39,7 @@ export const DashboardPage = () => {
         </Stack>
         <Stack direction={"row"} gap={4}>
           <TransactionTable />
-          <Stack gap={2}>
-            <IncomeBox totalIncome={totalIncome} incomeChange={incomeChange} />
-            <ExpenseBox
-              totalExpense={totalExpense}
-              expenseChange={expenseChange}
-            />
-          </Stack>
+          <Box sx={{ width: 400 }}></Box>
         </Stack>
       </Stack>
     </Layout>

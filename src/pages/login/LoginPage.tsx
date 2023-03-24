@@ -1,14 +1,13 @@
-import React, { ChangeEventHandler } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
+import React from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate, Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
+import { RootState } from "../../redux/redux";
 import { Layout } from "../../components/layout/Layout";
-import {
-  CustomInput,
-  InputFieldsDataType,
-} from "../../components/custom-input/CustomInput";
+import { inputFields } from "./LoginInputField";
+import { schema } from "./LoginZod";
 
 import {
   Avatar,
@@ -18,49 +17,29 @@ import {
   CssBaseline,
   FormControlLabel,
   Grid,
-  Link,
-  List,
-  ListItem,
   Paper,
+  Stack,
   Typography,
 } from "@mui/material";
+
 import { LockOutlined } from "@mui/icons-material";
-import { authActions } from "../../redux/auth-slice";
-import { auth } from "../../firebase/firebase-config";
-import { RootState } from "../../redux/redux";
+import { IconInputField } from "../../components/custom-input/IconInputField";
+import { usePostLogin } from "./usePostLogin";
 
 export interface FormDataType {
   [name: string]: string;
 }
 
-const inputFields: InputFieldsDataType[] = [
-  {
-    label: "Email Address",
-    id: "email",
-    type: "email",
-    name: "email",
-    autoComplete: "email",
-    autoFocus: true,
-    fullWidth: true,
-    required: true,
-  },
-  {
-    label: "Password",
-    id: "password",
-    type: "password",
-    name: "password",
-    autoComplete: "current-password",
-    required: true,
-    autoFocus: false,
-    fullWidth: true,
-  },
-];
-
 export const LoginPage = () => {
-  const dispatch = useDispatch();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schema),
+  });
 
-  const [formData, setFormData] = React.useState<FormDataType>({});
-  const [formError, setFormError] = React.useState<string>("");
+  const { sendLoginRequest } = usePostLogin();
 
   const user = useSelector((state: RootState) => state.auth.user);
   const navigate = useNavigate();
@@ -71,46 +50,8 @@ export const LoginPage = () => {
     }
   }, [user, navigate]);
 
-  const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    const { name, value } = event.target;
-
-    if (name === "password") {
-      setFormError("");
-      value.length < 6 && setFormError("Password is too short.");
-
-      !/[/d]/.test(value) && setFormError("Must include number");
-      !/[A-Z]/.test(value) && setFormError("Must include upercase letter");
-      !/[a-z]/.test(value) && setFormError("Must include lowercase letter");
-    }
-
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const { email, password } = formData;
-
-    try {
-      const resPending = signInWithEmailAndPassword(auth, email, password);
-      toast.promise(resPending, { pending: "Response Pending!" });
-
-      const { user } = await resPending;
-
-      if (user?.uid) {
-        const newData = {
-          uid: user.uid,
-        };
-        dispatch(authActions.setUser(newData));
-
-        toast.success("Logged In Successfully!");
-      }
-    } catch (error) {
-      toast.error("Login Failed!");
-    }
+  const onLoginSubmitHandler: SubmitHandler<FormDataType> = (data) => {
+    sendLoginRequest(data.email, data.password);
   };
 
   return (
@@ -158,37 +99,24 @@ export const LoginPage = () => {
               <Typography component="h1" variant="h5">
                 Sign in
               </Typography>
-              <Box
+              <Stack
+                gap={2}
                 component="form"
                 noValidate
-                onSubmit={handleSubmit}
+                onSubmit={handleSubmit(onLoginSubmitHandler)}
                 sx={{ mt: 1 }}
               >
                 {inputFields.map((item) => (
-                  <CustomInput
+                  <IconInputField
                     key={item.id}
                     item={item}
-                    handleChange={handleChange}
+                    register={register}
                   />
                 ))}
                 <Typography variant="body2">
                   Password must be more than 6 characters long and should also
-                  contains at least one number, Capital letter and small letter.
+                  contains at least one number, capital letter and small letter.
                 </Typography>
-                {formError && (
-                  <List
-                    sx={{
-                      listStyleType: "disc",
-                      pl: 2,
-                      "& .MuiListItem-root": {
-                        display: "list-item",
-                      },
-                      color: "red",
-                    }}
-                  >
-                    <ListItem>{formError}</ListItem>
-                  </List>
-                )}
                 <FormControlLabel
                   control={<Checkbox value="remember" color="primary" />}
                   label="Remember me"
@@ -203,17 +131,15 @@ export const LoginPage = () => {
                 </Button>
                 <Grid container>
                   <Grid item xs>
-                    <Link href="#" variant="body2">
-                      Forgot password?
-                    </Link>
+                    <Link to="/login">Forgot password?</Link>
                   </Grid>
                   <Grid item>
-                    <Link href="#" variant="body2">
+                    <Link to="/register">
                       {"Don't have an account? Sign Up"}
                     </Link>
                   </Grid>
                 </Grid>
-              </Box>
+              </Stack>
             </Box>
           </Grid>
         </Grid>

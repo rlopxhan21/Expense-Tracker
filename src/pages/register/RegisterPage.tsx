@@ -1,16 +1,13 @@
-import React, { ChangeEventHandler } from "react";
-import { toast } from "react-toastify";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import React from "react";
+import { Link } from "react-router-dom";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 import { Layout } from "../../components/layout/Layout";
-import {
-  CustomInput,
-  InputFieldsDataType,
-} from "../../components/custom-input/CustomInput";
-import { FormDataType } from "../login/LoginPage";
-import { doc, setDoc } from "firebase/firestore";
+import { inputFields } from "./RegisterInputFields";
+import { schema } from "./RegisterZod";
+import { IconInputField } from "../../components/custom-input/IconInputField";
+import { usePostRegister } from "./usePostRegister";
 
 import {
   Avatar,
@@ -19,135 +16,36 @@ import {
   CssBaseline,
   FormControlLabel,
   Grid,
-  Link,
-  List,
-  ListItem,
   Paper,
+  Stack,
   Typography,
 } from "@mui/material";
 import { LockOutlined } from "@mui/icons-material";
-import { auth, db } from "../../firebase/firebase-config";
 import { LoadingButton } from "@mui/lab";
-import { authActions } from "../../redux/auth-slice";
 
-const inputFields: InputFieldsDataType[] = [
-  {
-    label: "First Name",
-    id: "fname",
-    type: "text",
-    name: "fname",
-    autoComplete: "fname",
-    autoFocus: true,
-    fullWidth: true,
-    required: true,
-  },
-  {
-    label: "Last Name",
-    id: "lname",
-    type: "text",
-    name: "lname",
-    autoComplete: "lname",
-    required: true,
-    autoFocus: false,
-    fullWidth: true,
-  },
-  {
-    label: "Email Address",
-    id: "email",
-    type: "email",
-    name: "email",
-    autoComplete: "email",
-    required: true,
-    autoFocus: false,
-    fullWidth: true,
-  },
-  {
-    label: "Password",
-    id: "password",
-    type: "password",
-    name: "password",
-    autoComplete: "current-password",
-    required: true,
-    autoFocus: false,
-    fullWidth: true,
-  },
-  {
-    label: "Confirm Password",
-    id: "password2",
-    type: "password",
-    name: "password2",
-    autoComplete: "current-password",
-    required: true,
-    autoFocus: false,
-    fullWidth: true,
-  },
-];
+interface FormDataType {
+  [name: string]: string;
+}
 
 export const RegisterPage = () => {
-  const dispatch = useDispatch();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schema),
+  });
 
-  const [formData, setFormData] = React.useState<FormDataType>({});
-  const [formError, setFormError] = React.useState<string>("");
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const { isLoading, sendRegisterRequest } = usePostRegister();
 
-  const navigate = useNavigate();
-
-  const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    const { name, value } = event.target;
-
-    if (name === "password") {
-      setFormError("");
-      value.length < 6 && setFormError("Password is too short.");
-
-      !/[0-9]/.test(value) && setFormError("Must include number");
-      !/[A-Z]/.test(value) && setFormError("Must include upercase letter");
-      !/[a-z]/.test(value) && setFormError("Must include lowercase letter");
-    }
-
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const { password, password2, email, fname } = formData;
-
-    if (password !== password2) {
-      return toast.error("Password do not match!");
-    }
-
-    setIsLoading(true);
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(async (userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        setIsLoading(false);
-
-        updateProfile(user, { displayName: fname });
-
-        dispatch(authActions.setUser(user));
-
-        await setDoc(doc(db, "users", user.uid), {
-          fname: fname,
-          lname: formData.lname,
-          email: email,
-        });
-
-        toast.success("Registration Successful!");
-        navigate("/dashboard");
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        setIsLoading(false);
-
-        if (error.message.includes("auth/email-already-in-use")) {
-          toast.error("User already exists.");
-        }
-      });
+  const onRegisterSubmitHandler: SubmitHandler<FormDataType> = (data) => {
+    sendRegisterRequest(
+      data.email,
+      data.password,
+      data.password2,
+      data.fname,
+      data.lname
+    );
   };
 
   return (
@@ -195,37 +93,24 @@ export const RegisterPage = () => {
               <Typography component="h1" variant="h5">
                 Sign in
               </Typography>
-              <Box
+              <Stack
+                gap={2}
                 component="form"
                 noValidate
-                onSubmit={handleSubmit}
+                onSubmit={handleSubmit(onRegisterSubmitHandler)}
                 sx={{ mt: 1 }}
               >
                 {inputFields.map((item) => (
-                  <CustomInput
+                  <IconInputField
                     key={item.id}
                     item={item}
-                    handleChange={handleChange}
+                    register={register}
                   />
                 ))}
                 <Typography variant="body2">
                   Password must be more than 6 characters long and should also
-                  contains at least one number, Capital letter and small letter.
+                  contains at least one number, capital letter and small letter.
                 </Typography>
-                {formError && (
-                  <List
-                    sx={{
-                      listStyleType: "disc",
-                      pl: 2,
-                      "& .MuiListItem-root": {
-                        display: "list-item",
-                      },
-                      color: "red",
-                    }}
-                  >
-                    <ListItem>{formError}</ListItem>
-                  </List>
-                )}
                 <FormControlLabel
                   control={<Checkbox value="remember" color="primary" />}
                   label="Remember me"
@@ -235,24 +120,21 @@ export const RegisterPage = () => {
                   fullWidth
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}
-                  disabled={formError ? true : false}
                   loading={isLoading}
                 >
                   Sign Up
                 </LoadingButton>
                 <Grid container>
                   <Grid item xs>
-                    <Link href="#" variant="body2">
-                      Forgot password?
-                    </Link>
+                    <Link to="/login">Forgot password?</Link>
                   </Grid>
                   <Grid item>
-                    <Link href="#" variant="body2">
-                      {"Don't have an account? Sign Up"}
+                    <Link to="/login">
+                      {"Already have an account? Sign In"}
                     </Link>
                   </Grid>
                 </Grid>
-              </Box>
+              </Stack>
             </Box>
           </Grid>
         </Grid>

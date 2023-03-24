@@ -9,21 +9,27 @@ import { usePostTransaction } from "./usePostTransaction";
 
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
-import { LoadingButton } from "@mui/lab";
+import Tab from "@mui/material/Tab";
+import LoadingButton from "@mui/lab/LoadingButton";
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
 
 import AddIcon from "@mui/icons-material/Add";
-import {
-  FormControl,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-} from "@mui/material";
 
 export interface FormDataType {
   [name: string]: string;
 }
 
 export const TransactionForm = () => {
+  const [tabValue, setTabValue] = React.useState("income");
+
+  const onTabChangeHandler = (
+    event: React.SyntheticEvent<Element, Event>,
+    newValue: string
+  ) => {
+    setTabValue(newValue);
+  };
+
   const {
     register,
     handleSubmit,
@@ -35,7 +41,7 @@ export const TransactionForm = () => {
   const { sendTransactionData, isLoading } = usePostTransaction();
 
   const onTransactionFormHandler: SubmitHandler<FormDataType> = (data) => {
-    sendTransactionData(data);
+    sendTransactionData({ ...data, expense_income: tabValue });
   };
 
   return (
@@ -46,22 +52,29 @@ export const TransactionForm = () => {
         noValidate
         onSubmit={handleSubmit(onTransactionFormHandler)}
       >
-        <FormControl component="fieldset">
-          <RadioGroup>
-            <FormControlLabel
-              value="income"
-              control={<Radio />}
+        <TabContext value={tabValue}>
+          <TabList
+            onChange={onTabChangeHandler}
+            variant="fullWidth"
+            aria-label="Movie Tab"
+            color="secondary"
+          >
+            <Tab
               label="Income"
-              {...register("expense_income", { required: true })}
+              value="income"
+              sx={{
+                "&:checked": { color: "red", background: "red" },
+                fontWeight: 700,
+              }}
             />
-            <FormControlLabel
-              value="expense"
-              control={<Radio />}
+            <Tab
               label="Expense"
-              {...register("expense_income", { required: true })}
+              value="expense"
+              sx={{ color: "red", fontWeight: 700 }}
             />
-          </RadioGroup>
-        </FormControl>
+          </TabList>
+        </TabContext>
+
         {inputFields.map((item) => (
           <IconInputField key={item.id} item={item} register={register} />
         ))}
@@ -69,11 +82,11 @@ export const TransactionForm = () => {
           variant="contained"
           type="submit"
           startIcon={<AddIcon />}
-          color={"success"}
+          color={tabValue === "income" ? "success" : "error"}
           loading={isLoading}
           loadingIndicator="Adding..."
         >
-          Add
+          Add {tabValue === "income" ? "Income" : "Expense"}
         </LoadingButton>
       </Stack>
     </Paper>

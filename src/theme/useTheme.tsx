@@ -4,21 +4,21 @@ export const useTheme = () => {
   const theme = createTheme({
     palette: {
       mode: "light",
-      primary: {
-        main: "#fff",
-      },
-      success: {
-        main: "#2b8a3e",
-      },
-      error: {
-        main: "#c92a2a",
-      },
-      background: {
-        paper: "#eebefa",
-      },
-      text: {
-        secondary: "#2b8a3e",
-      },
+      // primary: {
+      //   main: "#00ff",
+      // },
+      // success: {
+      //   main: "#2b8a3e",
+      // },
+      // error: {
+      //   main: "#c92a2a",
+      // },
+      // background: {
+      //   paper: "#eebefa",
+      // },
+      // text: {
+      //   secondary: "#2b8a3e",
+      // },
     },
   });
 
