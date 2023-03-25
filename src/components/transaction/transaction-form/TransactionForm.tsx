@@ -15,6 +15,8 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 
 import AddIcon from "@mui/icons-material/Add";
+import { useTheme } from "../../../theme/useTheme";
+import { useMediaQuery } from "@mui/material";
 
 export interface FormDataType {
   [name: string]: string;
@@ -43,7 +45,6 @@ export const TransactionForm = () => {
 
   const onTransactionFormHandler: SubmitHandler<FormDataType> = (data) => {
     sendTransactionData({ ...data, expense_income: tabValue });
-    console.log(data.date);
     reset({
       desc: "",
       amount: "",
@@ -52,13 +53,16 @@ export const TransactionForm = () => {
     });
   };
 
+  const { theme } = useTheme();
+  const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
+
   return (
     <Paper
-      elevation={0}
+      elevation={smallScreen ? 0 : 10}
       sx={{
         p: 4,
-        width: 400,
-        borderRadius: 5,
+        width: { xs: "100vw", md: 400 },
+        borderRadius: { xs: 0, md: 5 },
         background: tabValue === "income" ? "#b2f2bb" : "#ffc9c9",
       }}
     >
@@ -92,7 +96,12 @@ export const TransactionForm = () => {
         </TabContext>
 
         {inputFields.map((item) => (
-          <IconInputField key={item.id} item={item} register={register} />
+          <IconInputField
+            key={item.id}
+            item={item}
+            register={register}
+            errors={errors}
+          />
         ))}
         <LoadingButton
           variant="contained"

@@ -2,7 +2,7 @@ import React from "react";
 
 import { Layout } from "../../components/layout/Layout";
 import { TransactionForm } from "../../components/transaction/transaction-form/TransactionForm";
-import { TransactionTable } from "../../components/transaction/transaction-table/TransactionTable";
+import { TransactionTable } from "../../components/transaction/transaction-table/Transaction-Table";
 import { BalanceBox } from "../../components/transaction/transaction-box/BalanceBox";
 import { IncomeBox } from "../../components/transaction/transaction-box/IncomeBox";
 import { ExpenseBox } from "../../components/transaction/transaction-box/ExpenseBox";
@@ -25,10 +25,10 @@ export const DashboardPage = () => {
       <Stack
         alignItems="center"
         gap={4}
-        width={{ xs: "95%", md: "90%" }}
+        width={{ xs: "100vw", md: "90%" }}
         sx={{ m: "auto", my: 4 }}
       >
-        <Stack direction={"row"} gap={4}>
+        <Stack direction={{ xs: "column", md: "row" }} gap={{ xs: 1, md: 4 }}>
           <BalanceBox totalBalance={totalBalance} />
           <IncomeBox totalIncome={totalIncome} incomeChange={incomeChange} />
           <ExpenseBox
@@ -37,7 +37,7 @@ export const DashboardPage = () => {
           />
           <TransactionForm />
         </Stack>
-        <Stack direction={"row"} gap={4}>
+        <Stack direction={{ xs: "column", md: "row" }} gap={4}>
           <TransactionTable />
           <Box sx={{ width: 400 }}></Box>
         </Stack>

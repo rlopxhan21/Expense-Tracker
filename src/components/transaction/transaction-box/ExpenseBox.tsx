@@ -6,6 +6,8 @@ import Chip from "@mui/material/Chip";
 
 import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
+import { useTheme } from "../../../theme/useTheme";
+import { useMediaQuery } from "@mui/material";
 
 interface Props {
   totalExpense: number;
@@ -16,18 +18,22 @@ export const ExpenseBox: React.FC<Props> = ({
   totalExpense,
   expenseChange,
 }) => {
+  const { theme } = useTheme();
+  const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
+
   return (
     <Paper
-      elevation={0}
+      elevation={smallScreen ? 0 : 10}
       sx={{
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-evenly",
         gap: 4,
         p: 4,
-        width: 400,
-        borderRadius: 5,
+        width: { xs: "100vw", md: 400 },
+        borderRadius: { xs: 0, md: 5 },
         textAlign: "center",
+        background: smallScreen ? "#d0bfff" : "#f3d9fa",
       }}
     >
       <Typography variant="h5" fontWeight={700} color="error">

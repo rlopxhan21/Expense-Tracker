@@ -111,6 +111,7 @@ export const LoginPage = () => {
                     key={item.id}
                     item={item}
                     register={register}
+                    errors={errors}
                   />
                 ))}
                 <Typography variant="body2">

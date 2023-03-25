@@ -105,6 +105,7 @@ export const RegisterPage = () => {
                     key={item.id}
                     item={item}
                     register={register}
+                    errors={errors}
                   />
                 ))}
                 <Typography variant="body2">

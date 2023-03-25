@@ -20,9 +20,10 @@ export interface InputListDataType {
 interface Props {
   item: InputListDataType;
   register: UseFormRegister<any>;
+  errors: any;
 }
 
-export const IconInputField: React.FC<Props> = ({ item, register }) => {
+export const IconInputField: React.FC<Props> = ({ item, register, errors }) => {
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
 
   const name = item.name;
@@ -35,6 +36,8 @@ export const IconInputField: React.FC<Props> = ({ item, register }) => {
       inputType = item.type;
     }
   }
+
+  console.log(errors);
 
   return (
     <React.Fragment>
@@ -65,6 +68,7 @@ export const IconInputField: React.FC<Props> = ({ item, register }) => {
         {...register(name, { required: item.required })}
         fullWidth
       />
+      {/* <Typography>{errorMessage}</Typography> */}
     </React.Fragment>
   );
 };
