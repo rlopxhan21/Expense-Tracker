@@ -9,15 +9,13 @@ import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 
 import PaymentsIcon from "@mui/icons-material/Payments";
-import { Modal, Stack, useMediaQuery } from "@mui/material";
+import { Stack, useMediaQuery } from "@mui/material";
 
 interface Props {
   totalBalance: number;
 }
 
 export const BalanceBox: React.FC<Props> = ({ totalBalance }) => {
-  const [open, setOpen] = React.useState(false);
-
   const { theme } = useTheme();
   const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -34,10 +32,10 @@ export const BalanceBox: React.FC<Props> = ({ totalBalance }) => {
       }}
     >
       <Stack
-        direction={"row"}
+        direction={{ xs: "column", md: "row" }}
         justifyContent={"space-between"}
         alignItems={"center"}
-        sx={{ width: "45%" }}
+        sx={{ width: { xs: "95%", md: "45%" } }}
       >
         <Typography variant="h5" fontWeight={700}>
           Balance / Saving Information
@@ -61,31 +59,7 @@ export const BalanceBox: React.FC<Props> = ({ totalBalance }) => {
           width: smallScreen ? "95%" : "45%",
         }}
       >
-        <Box onClick={() => setOpen(true)}>
-          Add
-          <Typography variant="button" component={"span"} sx={{ color: "red" }}>
-            {" "}
-            Expense
-          </Typography>
-          /
-          <Typography
-            variant="button"
-            component={"span"}
-            sx={{ color: "green" }}
-          >
-            {" "}
-            Income
-          </Typography>
-        </Box>
-        <Modal
-          keepMounted
-          open={open}
-          onClose={() => setOpen(false)}
-          aria-labelledby="modal-transaction-form"
-          aria-describedby="modal-transaction-form"
-        >
-          <TransactionForm setOpen={setOpen} />
-        </Modal>
+        <TransactionForm />
       </Button>
     </Paper>
   );
