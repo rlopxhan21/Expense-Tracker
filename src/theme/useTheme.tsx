@@ -17,7 +17,7 @@ export const useTheme = () => {
         main: "#c92a2a",
       },
       background: {
-        paper: "#f3d9fa",
+        paper: "#d0bfff",
         default: "#d0bfff",
       },
       text: {

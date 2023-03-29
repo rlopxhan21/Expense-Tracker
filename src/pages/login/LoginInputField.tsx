@@ -1,11 +1,9 @@
-import { InputListDataType } from "../../components/custom-input/IconInputField";
-
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import PasswordIcon from "@mui/icons-material/Password";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
-export const inputFields: InputListDataType[] = [
+export const inputFields = [
   {
     id: "email",
     label: "Email Address",
@@ -16,7 +14,6 @@ export const inputFields: InputListDataType[] = [
     endIconSwap: <></>,
     autoFocus: true,
     required: true,
-    defaultValue: "",
   },
   {
     id: "password",
@@ -26,8 +23,7 @@ export const inputFields: InputListDataType[] = [
     startIcon: <PasswordIcon />,
     endIcon: <VisibilityIcon />,
     endIconSwap: <VisibilityOffIcon />,
-    required: true,
     autoFocus: false,
-    defaultValue: "",
+    required: true,
   },
 ];

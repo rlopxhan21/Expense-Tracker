@@ -35,6 +35,10 @@ export const useGetTransaction = () => {
         trans.push(data);
       });
 
+      trans.sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      );
+
       dispatch(transActions.setTrans(trans));
     } catch (error) {
       toast.error("Fetching Transaction Failed!");

@@ -1,5 +1,5 @@
 import React from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { IconInputField } from "../../custom-input/IconInputField";
@@ -19,11 +19,37 @@ import { useTheme } from "../../../theme/useTheme";
 import { useMediaQuery } from "@mui/material";
 
 export interface FormDataType {
-  [name: string]: string;
+  desc: string;
+  amount: string;
+  date: Date | string;
 }
 
-export const TransactionForm = () => {
-  const [tabValue, setTabValue] = React.useState("income");
+interface Props {
+  setOpen: (data: boolean) => void;
+}
+
+const style = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  p: 4,
+};
+
+export const TransactionForm: React.FC<Props> = ({ setOpen }) => {
+  const [tabValue, setTabValue] = React.useState<string>("income");
+
+  const methods = useForm({
+    defaultValues: {
+      desc: "",
+      amount: "",
+      date: "",
+    },
+    resolver: zodResolver(schema),
+  });
 
   const onTabChangeHandler = (
     event: React.SyntheticEvent<Element, Event>,
@@ -32,25 +58,11 @@ export const TransactionForm = () => {
     setTabValue(newValue);
   };
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm({
-    resolver: zodResolver(schema),
-  });
-
   const { sendTransactionData, isLoading } = usePostTransaction();
 
   const onTransactionFormHandler: SubmitHandler<FormDataType> = (data) => {
     sendTransactionData({ ...data, expense_income: tabValue });
-    reset({
-      desc: "",
-      amount: "",
-      date: "",
-      expense_income: new Date().toISOString().split("T")[0],
-    });
+    setOpen(false);
   };
 
   const { theme } = useTheme();
@@ -60,60 +72,58 @@ export const TransactionForm = () => {
     <Paper
       elevation={smallScreen ? 0 : 10}
       sx={{
-        p: 4,
-        width: { xs: "100vw", md: 400 },
+        // p: 4,
+        // width: { xs: "100vw", md: 400 },
         borderRadius: { xs: 0, md: 5 },
         background: tabValue === "income" ? "#b2f2bb" : "#ffc9c9",
+        ...style,
       }}
     >
-      <Stack
-        gap={2}
-        component="form"
-        noValidate
-        onSubmit={handleSubmit(onTransactionFormHandler)}
-      >
-        <TabContext value={tabValue}>
-          <TabList
-            onChange={onTabChangeHandler}
-            variant="fullWidth"
-            aria-label="Movie Tab"
-            color="secondary"
-          >
-            <Tab
-              label="Income"
-              value="income"
-              sx={{
-                color: "green",
-                fontWeight: 700,
-              }}
-            />
-            <Tab
-              label="Expense"
-              value="expense"
-              sx={{ color: "red", fontWeight: 700 }}
-            />
-          </TabList>
-        </TabContext>
-
-        {inputFields.map((item) => (
-          <IconInputField
-            key={item.id}
-            item={item}
-            register={register}
-            errors={errors}
-          />
-        ))}
-        <LoadingButton
-          variant="contained"
-          type="submit"
-          startIcon={<AddIcon />}
-          color={tabValue === "income" ? "success" : "error"}
-          loading={isLoading}
-          loadingIndicator="Adding..."
+      <FormProvider {...methods}>
+        <Stack
+          gap={2}
+          component="form"
+          noValidate
+          onSubmit={methods.handleSubmit(onTransactionFormHandler)}
         >
-          Add {tabValue === "income" ? "Income" : "Expense"}
-        </LoadingButton>
-      </Stack>
+          <TabContext value={tabValue}>
+            <TabList
+              onChange={onTabChangeHandler}
+              variant="fullWidth"
+              aria-label="Movie Tab"
+              color="secondary"
+            >
+              <Tab
+                label="Income"
+                value="income"
+                sx={{
+                  color: "green",
+                  fontWeight: 700,
+                }}
+              />
+              <Tab
+                label="Expense"
+                value="expense"
+                sx={{ color: "red", fontWeight: 700 }}
+              />
+            </TabList>
+          </TabContext>
+
+          {inputFields.map((item) => (
+            <IconInputField key={item.id} {...item} />
+          ))}
+          <LoadingButton
+            variant="contained"
+            type="submit"
+            startIcon={<AddIcon />}
+            color={tabValue === "income" ? "success" : "error"}
+            loading={isLoading}
+            loadingIndicator="Adding..."
+          >
+            Add {tabValue === "income" ? "Income" : "Expense"}
+          </LoadingButton>
+        </Stack>
+      </FormProvider>
     </Paper>
   );
 };

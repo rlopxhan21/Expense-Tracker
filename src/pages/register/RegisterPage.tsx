@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
 import { Layout } from "../../components/layout/Layout";
 import { inputFields } from "./RegisterInputFields";
@@ -12,27 +12,33 @@ import { usePostRegister } from "./usePostRegister";
 import {
   Avatar,
   Box,
-  Checkbox,
   CssBaseline,
-  FormControlLabel,
   Grid,
   Paper,
   Stack,
   Typography,
 } from "@mui/material";
+
 import { LockOutlined } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 
 interface FormDataType {
-  [name: string]: string;
+  email: string;
+  fname: string;
+  lname: string;
+  password: string;
+  password2: string;
 }
 
 export const RegisterPage = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
+  const methods = useForm({
+    defaultValues: {
+      email: "",
+      fname: "",
+      lname: "",
+      password: "",
+      password2: "",
+    },
     resolver: zodResolver(schema),
   });
 
@@ -93,49 +99,42 @@ export const RegisterPage = () => {
               <Typography component="h1" variant="h5">
                 Sign in
               </Typography>
-              <Stack
-                gap={2}
-                component="form"
-                noValidate
-                onSubmit={handleSubmit(onRegisterSubmitHandler)}
-                sx={{ mt: 1 }}
-              >
-                {inputFields.map((item) => (
-                  <IconInputField
-                    key={item.id}
-                    item={item}
-                    register={register}
-                    errors={errors}
-                  />
-                ))}
-                <Typography variant="body2">
-                  Password must be more than 6 characters long and should also
-                  contains at least one number, capital letter and small letter.
-                </Typography>
-                <FormControlLabel
-                  control={<Checkbox value="remember" color="primary" />}
-                  label="Remember me"
-                />
-                <LoadingButton
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}
-                  loading={isLoading}
+              <FormProvider {...methods}>
+                <Stack
+                  gap={2}
+                  component="form"
+                  noValidate
+                  onSubmit={methods.handleSubmit(onRegisterSubmitHandler)}
+                  sx={{ mt: 1 }}
                 >
-                  Sign Up
-                </LoadingButton>
-                <Grid container>
-                  <Grid item xs>
-                    <Link to="/login">Forgot password?</Link>
+                  {inputFields.map((item) => (
+                    <IconInputField key={item.id} {...item} />
+                  ))}
+                  <Typography variant="body2">
+                    Password must be 8 characters long containing at least one
+                    small letter, one capital letter and one numeric character.
+                  </Typography>
+                  <LoadingButton
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
+                    loading={isLoading}
+                  >
+                    Sign Up
+                  </LoadingButton>
+                  <Grid container>
+                    <Grid item xs>
+                      {/* <Link to="/login">Forgot password?</Link> */}
+                    </Grid>
+                    <Grid item>
+                      <Link to="/login">
+                        {"Already have an account? Sign In"}
+                      </Link>
+                    </Grid>
                   </Grid>
-                  <Grid item>
-                    <Link to="/login">
-                      {"Already have an account? Sign In"}
-                    </Link>
-                  </Grid>
-                </Grid>
-              </Stack>
+                </Stack>
+              </FormProvider>
             </Box>
           </Grid>
         </Grid>

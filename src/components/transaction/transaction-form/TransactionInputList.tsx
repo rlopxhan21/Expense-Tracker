@@ -1,10 +1,8 @@
-import { InputListDataType } from "../../custom-input/IconInputField";
-
 import InfoIcon from "@mui/icons-material/Info";
 import PaymentsIcon from "@mui/icons-material/Payments";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
-export const inputFields: InputListDataType[] = [
+export const inputFields = [
   {
     id: "description",
     label: "Description",
@@ -15,7 +13,6 @@ export const inputFields: InputListDataType[] = [
     endIconSwap: <></>,
     autoFocus: true,
     required: true,
-    defaultValue: "",
   },
   {
     id: "amount",
@@ -27,7 +24,6 @@ export const inputFields: InputListDataType[] = [
     endIconSwap: <></>,
     required: true,
     autoFocus: false,
-    defaultValue: "",
   },
   {
     id: "date",
@@ -39,6 +35,5 @@ export const inputFields: InputListDataType[] = [
     endIconSwap: <></>,
     required: true,
     autoFocus: false,
-    defaultValue: new Date().toISOString().split("T")[0],
   },
 ];

@@ -9,6 +9,7 @@ import { RootState } from "../../../redux/redux";
 
 import {
   Avatar,
+  Divider,
   IconButton,
   List,
   ListItem,
@@ -16,13 +17,11 @@ import {
   ListItemText,
   Stack,
   Typography,
-  useMediaQuery,
 } from "@mui/material";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PaymentsIcon from "@mui/icons-material/Payments";
-import { useTheme } from "../../../theme/useTheme";
 
 const month = [
   "Jan",
@@ -63,108 +62,116 @@ export const TransactionTable = () => {
     }
   };
 
-  const { theme } = useTheme();
-  const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
-
   return (
     <List
       sx={{
-        width: { xs: "100vw", md: 1264 },
+        width: "100%",
         bgcolor: "background.paper",
-        borderRadius: { xs: 0, md: 5 },
-        background: smallScreen ? "#d0bfff" : "#f3d9fa",
+        borderRadius: { xs: 0, md: 2.5 },
       }}
     >
       {transactionData.map((item) => (
-        <Stack
-          key={item.id}
-          direction={"row"}
-          justifyContent={"space-between"}
-          alignItems={"center"}
-        >
-          <ListItem alignItems="flex-start">
-            <Stack direction={"row"} gap={{ xs: 2, md: 6 }}>
-              <Stack direction={"row"} gap={{ xs: 1, md: 2 }}>
-                <ListItemText
-                  primary={
-                    <Typography
-                      variant="button"
-                      color={
-                        item.expense_income === "income" ? "#2b8a3e" : "error"
-                      }
-                      sx={{ display: "block" }}
-                    >
-                      {month[new Date(item.date).getMonth()]}
-                    </Typography>
-                  }
-                  secondary={
-                    <Typography
-                      variant="button"
-                      color={
-                        item.expense_income === "income" ? "#2b8a3e" : "error"
-                      }
-                      sx={{ ml: 0.5 }}
-                    >
-                      {new Date(item.date).getDate()}
-                    </Typography>
-                  }
-                />
-                <Typography
-                  variant="button"
-                  color={item.expense_income === "income" ? "#2b8a3e" : "error"}
-                  m="auto"
-                  fontWeight={700}
-                >
-                  {new Date(item.date).getFullYear()}
-                </Typography>
+        <React.Fragment key={item.id}>
+          <Stack
+            direction={"row"}
+            justifyContent={"space-between"}
+            alignItems={"center"}
+            sx={{
+              px: { xs: 0, md: 4 },
+              borderRadius: 2.5,
+              "&:hover": {
+                background: "#fff3bf",
+              },
+            }}
+          >
+            <ListItem alignItems="flex-start">
+              <Stack direction={"row"} gap={{ xs: 2, md: 6 }}>
+                <Stack direction={"row"} gap={{ xs: 1, md: 2 }}>
+                  <ListItemText
+                    primary={
+                      <Typography
+                        variant="button"
+                        color={
+                          item.expense_income === "income" ? "#2b8a3e" : "error"
+                        }
+                        sx={{ display: "block" }}
+                      >
+                        {month[new Date(item.date).getMonth()]}
+                      </Typography>
+                    }
+                    secondary={
+                      <Typography
+                        variant="button"
+                        color={
+                          item.expense_income === "income" ? "#2b8a3e" : "error"
+                        }
+                        sx={{ ml: 0.5 }}
+                      >
+                        {new Date(item.date).getDate()}
+                      </Typography>
+                    }
+                  />
+                  <Typography
+                    variant="button"
+                    color={
+                      item.expense_income === "income" ? "#2b8a3e" : "error"
+                    }
+                    m="auto"
+                    fontWeight={700}
+                  >
+                    {new Date(item.date).getFullYear()}
+                  </Typography>
+                </Stack>
+
+                <ListItemAvatar>
+                  <Avatar alt="Bills/ Expense" variant="square">
+                    {item.expense_income === "expense" ? (
+                      <ShoppingCartIcon color="error" />
+                    ) : (
+                      <PaymentsIcon color="success" />
+                    )}
+                  </Avatar>
+                </ListItemAvatar>
               </Stack>
 
-              <ListItemAvatar>
-                <Avatar
-                  alt="Bills/ Expense"
-                  variant="square"
-                  sx={{ background: smallScreen ? "#d0bfff" : "#f3d9fa" }}
-                >
-                  {item.expense_income === "expense" ? (
-                    <ShoppingCartIcon color="error" />
-                  ) : (
-                    <PaymentsIcon color="success" />
-                  )}
-                </Avatar>
-              </ListItemAvatar>
-            </Stack>
-
-            <ListItemText
-              primary={
-                <Typography
-                  color={item.expense_income === "income" ? "#2b8a3e" : "error"}
-                  fontWeight={700}
-                >
-                  {item.desc}
-                </Typography>
-              }
-              secondary={
-                <Typography
-                  sx={{ display: "inline" }}
-                  component="span"
-                  variant="body2"
-                  color={item.expense_income === "income" ? "#2b8a3e" : "error"}
-                >
-                  You have{" "}
-                  {item.expense_income === "income" ? "earned" : "paid"} A${" "}
-                  {item.amount}
-                </Typography>
-              }
-              color="error"
-              sx={{ ml: "auto" }}
-            />
-          </ListItem>
-          <IconButton
-            onClick={() => onDeleteHandler(item.id, item.desc, item.amount)}
-          >
-            <DeleteIcon color="error" />
-          </IconButton>
-        </Stack>
+              <ListItemText
+                primary={
+                  <Typography
+                    color={
+                      item.expense_income === "income" ? "#2b8a3e" : "error"
+                    }
+                    fontWeight={700}
+                  >
+                    {item.desc}
+                  </Typography>
+                }
+                secondary={
+                  <Typography
+                    sx={{ display: "inline" }}
+                    component="span"
+                    variant="body2"
+                    color={
+                      item.expense_income === "income" ? "#2b8a3e" : "error"
+                    }
+                  >
+                    You have{" "}
+                    {item.expense_income === "income" ? "earned" : "paid"} A${" "}
+                    {item.amount}
+                  </Typography>
+                }
+                color="error"
+                sx={{ ml: "auto" }}
+              />
+            </ListItem>
+            <IconButton
+              size="large"
+              onClick={() => onDeleteHandler(item.id, item.desc, item.amount)}
+            >
+              <DeleteIcon color="error" />
+            </IconButton>
+          </Stack>
+          <Divider sx={{ borderBottomWidth: 4 }} />
+        </React.Fragment>
       ))}
     </List>
   );

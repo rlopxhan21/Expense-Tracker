@@ -1,12 +1,10 @@
-import { InputListDataType } from "../../components/custom-input/IconInputField";
-
 import BadgeIcon from "@mui/icons-material/Badge";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import PasswordIcon from "@mui/icons-material/Password";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
-export const inputFields: InputListDataType[] = [
+export const inputFields = [
   {
     label: "First Name",
     id: "fname",
@@ -17,7 +15,6 @@ export const inputFields: InputListDataType[] = [
     endIconSwap: <></>,
     autoFocus: true,
     required: true,
-    defaultValue: "",
   },
   {
     label: "Last Name",
@@ -29,7 +26,6 @@ export const inputFields: InputListDataType[] = [
     endIconSwap: <></>,
     required: true,
     autoFocus: false,
-    defaultValue: "",
   },
   {
     label: "Email Address",
@@ -41,7 +37,6 @@ export const inputFields: InputListDataType[] = [
     endIconSwap: <></>,
     required: true,
     autoFocus: false,
-    defaultValue: "",
   },
   {
     label: "Password",
@@ -53,7 +48,6 @@ export const inputFields: InputListDataType[] = [
     endIconSwap: <VisibilityOffIcon />,
     required: true,
     autoFocus: false,
-    defaultValue: "",
   },
   {
     label: "Confirm Password",
@@ -65,6 +59,5 @@ export const inputFields: InputListDataType[] = [
     endIconSwap: <VisibilityOffIcon />,
     required: true,
     autoFocus: false,
-    defaultValue: "",
   },
 ];

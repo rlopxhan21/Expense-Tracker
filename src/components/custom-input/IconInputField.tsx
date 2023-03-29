@@ -1,54 +1,54 @@
 import React from "react";
-import { UseFormRegister } from "react-hook-form";
+import { useController, useFormContext } from "react-hook-form";
 
-import TextField from "@mui/material/TextField";
+import TextField, { TextFieldProps } from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
+import FormControl from "@mui/material/FormControl";
 
-export interface InputListDataType {
+interface Props extends Omit<TextFieldProps, "name" | "label" | "type"> {
   id: string;
+  name: string;
   label: string;
   type: string;
-  name: string;
   startIcon: JSX.Element;
   endIcon: JSX.Element;
   endIconSwap: JSX.Element;
-  autoFocus: boolean;
-  required: boolean;
-  defaultValue: string;
 }
 
-interface Props {
-  item: InputListDataType;
-  register: UseFormRegister<any>;
-  errors: any;
-}
-
-export const IconInputField: React.FC<Props> = ({ item, register, errors }) => {
+export const IconInputField: React.FC<Props> = ({
+  id,
+  name,
+  label,
+  type,
+  startIcon,
+  endIcon,
+  endIconSwap,
+  ...rest
+}) => {
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
 
-  const name = item.name;
-  let inputType = item.type;
+  const { control, formState } = useFormContext();
+  const { field, fieldState } = useController({ name, control });
+
+  let inputType = type;
 
   if (inputType === "password") {
     if (showPassword) {
       inputType = "text";
     } else {
-      inputType = item.type;
+      inputType = type;
     }
   }
 
-  console.log(errors);
-
   return (
-    <React.Fragment>
+    <FormControl>
       <TextField
-        id={item.id}
-        label={item.label}
+        id={id}
+        label={label}
         type={inputType}
-        defaultValue={item.defaultValue}
         InputProps={{
           startAdornment: (
-            <InputAdornment position="start">{item.startIcon}</InputAdornment>
+            <InputAdornment position="start">{startIcon}</InputAdornment>
           ),
           endAdornment: (
             <InputAdornment
@@ -60,15 +60,15 @@ export const IconInputField: React.FC<Props> = ({ item, register, errors }) => {
                 },
               }}
             >
-              {showPassword ? item.endIconSwap : item.endIcon}
+              {showPassword ? endIconSwap : endIcon}
             </InputAdornment>
           ),
         }}
-        autoFocus={item.autoFocus}
-        {...register(name, { required: item.required })}
-        fullWidth
+        {...field}
+        {...rest}
+        error={!!formState.errors[name]}
+        helperText={fieldState.error?.message}
       />
-      {/* <Typography>{errorMessage}</Typography> */}
-    </React.Fragment>
+    </FormControl>
   );
 };

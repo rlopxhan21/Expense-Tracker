@@ -53,9 +53,14 @@ export const Header: React.FC = (props: Props) => {
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
-      <Typography variant="h6" sx={{ my: 2 }}>
-        Expense Tracker
-      </Typography>
+      <Box sx={{ my: 2 }}>
+        <Typography variant="h6" component={"span"} sx={{ color: "green" }}>
+          Expense{" "}
+        </Typography>
+        <Typography variant="h6" component={"span"} sx={{ color: "red" }}>
+          Tracker
+        </Typography>
+      </Box>
       <Divider />
       <List>
         {!user && (
@@ -114,17 +119,19 @@ export const Header: React.FC = (props: Props) => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography
-            variant="h6"
-            component="div"
+          <Box
             sx={{
               flexGrow: 1,
-              color: "#000",
               display: { xs: "none", sm: "block" },
             }}
           >
-            Expense Tracker
-          </Typography>
+            <Typography variant="h6" component={"span"} sx={{ color: "green" }}>
+              Expense{" "}
+            </Typography>
+            <Typography variant="h6" component={"span"} sx={{ color: "red" }}>
+              Tracker
+            </Typography>
+          </Box>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             {!user && (
               <>

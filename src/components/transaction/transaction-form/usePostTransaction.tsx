@@ -3,10 +3,14 @@ import { useSelector } from "react-redux";
 import { addDoc, collection } from "firebase/firestore";
 import { toast } from "react-toastify";
 
+import { FormDataType } from "./TransactionForm";
 import { db } from "../../../firebase/firebase-config";
 import { RootState } from "../../../redux/redux";
-import { FormDataType } from "./TransactionForm";
 import { useGetTransaction } from "./useGetTransaction";
+
+interface PostDataType extends FormDataType {
+  expense_income: string;
+}
 
 export const usePostTransaction = () => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -15,7 +19,7 @@ export const usePostTransaction = () => {
 
   const user = useSelector((state: RootState) => state.auth.user);
 
-  const sendTransactionData = async (data: FormDataType) => {
+  const sendTransactionData = async (data: PostDataType) => {
     setIsLoading(true);
     try {
       await addDoc(collection(db, "transactions"), {
