@@ -75,30 +75,38 @@ export const TransactionForm: React.FC = () => {
   const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
-    <Button
-      variant="contained"
-      size="large"
-      startIcon={<PaymentsIcon />}
-      onClick={() => setOpen(true)}
-      disableElevation
-      sx={{
-        px: 8,
-        borderRadius: 2.5,
-        width: smallScreen ? "95%" : "45%",
-      }}
-    >
-      <Box>
-        Add
-        <Typography variant="button" component={"span"} sx={{ color: "red" }}>
-          {" "}
-          Expense
-        </Typography>
-        /
-        <Typography variant="button" component={"span"} sx={{ color: "green" }}>
-          {" "}
-          Income
-        </Typography>
-      </Box>
+    <React.Fragment>
+      <Button
+        variant="contained"
+        size="large"
+        startIcon={<PaymentsIcon />}
+        onClick={() => setOpen(true)}
+        disableElevation
+        sx={{
+          px: 8,
+          borderRadius: 2.5,
+          width: smallScreen ? "95%" : "45%",
+        }}
+      >
+        {" "}
+        <Box>
+          Add
+          <Typography variant="button" component={"span"} sx={{ color: "red" }}>
+            {" "}
+            Expense
+          </Typography>
+          /
+          <Typography
+            variant="button"
+            component={"span"}
+            sx={{ color: "green" }}
+          >
+            {" "}
+            Income
+          </Typography>
+        </Box>
+      </Button>
+
       <Modal
         open={open}
         onClose={() => setOpen(false)}
@@ -160,6 +168,6 @@ export const TransactionForm: React.FC = () => {
           </FormProvider>
         </Paper>
       </Modal>
-    </Button>
+    </React.Fragment>
   );
 };
