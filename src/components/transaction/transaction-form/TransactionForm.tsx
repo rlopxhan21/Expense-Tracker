@@ -13,10 +13,13 @@ import Tab from "@mui/material/Tab";
 import LoadingButton from "@mui/lab/LoadingButton";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
+import Button from "@mui/material/Button";
 
-import AddIcon from "@mui/icons-material/Add";
 import { useTheme } from "../../../theme/useTheme";
 import { Box, Modal, Typography, useMediaQuery } from "@mui/material";
+
+import AddIcon from "@mui/icons-material/Add";
+import PaymentsIcon from "@mui/icons-material/Payments";
 
 export interface FormDataType {
   desc: string;
@@ -72,8 +75,19 @@ export const TransactionForm: React.FC = () => {
   const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
-    <React.Fragment>
-      <Box onClick={() => setOpen(true)}>
+    <Button
+      variant="contained"
+      size="large"
+      startIcon={<PaymentsIcon />}
+      onClick={() => setOpen(true)}
+      disableElevation
+      sx={{
+        px: 8,
+        borderRadius: 2.5,
+        width: smallScreen ? "95%" : "45%",
+      }}
+    >
+      <Box>
         Add
         <Typography variant="button" component={"span"} sx={{ color: "red" }}>
           {" "}
@@ -146,6 +160,6 @@ export const TransactionForm: React.FC = () => {
           </FormProvider>
         </Paper>
       </Modal>
-    </React.Fragment>
+    </Button>
   );
 };
